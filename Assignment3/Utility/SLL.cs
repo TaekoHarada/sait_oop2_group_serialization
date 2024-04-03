@@ -116,27 +116,19 @@ namespace Assignment3.Utility
 		/// 
 		public void Replace(User value, int index)
 		{
-			Node newNode = new Node(value);
-			Node tmp;
+			Node tmp=Head;
 
-			if (IsEmpty())
+			if (IsEmpty() || index < 0 || index > Count()-1)
 			{
-				if (index != 0) { throw new IndexOutOfRangeException(index.ToString()); }
-				Head = newNode;
-				Tail = newNode;
+				 throw new IndexOutOfRangeException(index.ToString()); 
 			}
 			else
 			{
-				// in the case of 'sll is empty' and 'index=0', "index + 1 > Count()" does not work
-				if (index < 0 || index + 1 > Count()) { throw new IndexOutOfRangeException(index.ToString()); }
-
-				tmp = Head;
-				for (int i = 0; index - 1 > i; i++)
+				for (int i = 0; i<index; i++)
 				{
 					tmp = tmp.Next;
 				}
-				newNode.Next = tmp.Next.Next;
-				tmp.Next = newNode;
+				tmp.Data = value;
 			}
 		}
 
@@ -162,7 +154,7 @@ namespace Assignment3.Utility
 		/// <exception cref="CannotRemoveException">Thrown if list is empty.</exception>
 		public void RemoveFirst()
 		{
-			if (Head == null) { throw new CannotRemoveException(); }
+			if (IsEmpty()) { throw new CannotRemoveException(); }
 			Head = Head.Next;
 		}
 
@@ -173,7 +165,7 @@ namespace Assignment3.Utility
 		public void RemoveLast()
 		{
 			// 0 Node
-			if (Head == null) { throw new CannotRemoveException(); }
+			if (IsEmpty()) { throw new CannotRemoveException(); }
 			// 1 Node
 			if (Head == Tail)
 			{
@@ -255,13 +247,8 @@ namespace Assignment3.Utility
 		/// <exception cref="IndexOutOfRangeException">Thrown if index is negative or larger than size - 1 of list.</exception>
 		public User GetValue(int index)
 		{
-			// 0 Node
-			if (IsEmpty())
-			{
-				throw new CannotRemoveException();
-			}
-
-			if (index < 0 || index > Count())
+			// 0 Node OR Idex is out of range
+			if (index < 0 || index > Count() || IsEmpty())
 			{
 				throw new IndexOutOfRangeException(index.ToString());
 			}
@@ -305,6 +292,28 @@ namespace Assignment3.Utility
 		{
 			if (IndexOf(value) == -1) { return false; }
 			else { return true; }
+		}
+
+		/// Additional method
+		/// <summary>
+		/// Reverse the order of the nodes in the liked list
+		/// </summary>
+		public void Reverse()
+		{
+			if (Count() == 1 || IsEmpty()) { return; }
+
+
+			for (int i = 0; i < Count() / 2; i++)
+			{
+				// Store the data of index i
+				User tmpData = GetValue(i);
+
+				// Set the value: index of 'count-i' to index of 'i'
+				Replace(GetValue(Count() - 1 - i), i);
+
+				// Set the value: index of 'i' to index of 'count-i'
+				Replace(tmpData, Count() - 1 - i);
+			}
 		}
 
 	}

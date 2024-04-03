@@ -19,14 +19,10 @@ namespace Assignment3.Tests
 		// Not Empty List
 		SLL notEmptySll;
 
-		// initial data for Non Empty List
-		User testUser1;
-		User testUser2;
-		Node node1;
-		Node node2;
-
+		User testUser1 = new User(111, "TestUserName1", "test@test.com", "TESTpassword");
+		User testUser2 = new User(222, "TestUserName2", "test@test.com", "TESTpassword");
 		// Test data for adding
-		User testUser3;
+		User testUser3 = new User(333, "TestUserName3", "test@test.com", "TESTpassword");
 
 		[SetUp]
 		public void SetUp()
@@ -37,25 +33,19 @@ namespace Assignment3.Tests
 			// Not Empty List
 			notEmptySll = new SLL();
 
-			testUser1 = new User(111, "TestUserName", "test@test.com", "TESTpassword");
-			testUser2 = new User(222, "TestUserName", "test@test.com", "TESTpassword");
-			node1 = new Node(testUser1);
-			node2 = new Node(testUser2);
+			Node node1 = new Node(testUser1);
+			Node node2 = new Node(testUser2);
 			node1.Next = node2;
 
 			// Add to list
 			notEmptySll.Head = node1;
 			notEmptySll.Tail = node2;
-
-			testUser3 = new User(333, "TestUserName", "test@test.com", "TESTpassword");
-
 		}
 
 		// The linked list is empty.
 		[Test]
 		public void IsEmpty()
 		{
-
 			var result = emptySll.IsEmpty();
 			Assert.IsTrue(result);
 		}
@@ -146,50 +136,35 @@ namespace Assignment3.Tests
 		}
 
 		// Replace
-		// An item is inserted at index. (Empty List)
+		// An data is replaced at index. (Empty List)
 		[Test]
 		public void AnItemIsReplace_ToEmptyList()
 		{
-			emptySll.Replace(testUser3, 0);
-			Assert.AreEqual(testUser3, emptySll.Head.Data);
-			Assert.AreEqual(emptySll.Count(), 1);
+			Assert.Throws<IndexOutOfRangeException>(() => emptySll.Replace(testUser3, 0));
 		}
 
-		// An item is inserted at index. (Non Empty List)
+		// An data is replaced at index. (Non Empty List)
 		[Test]
 		public void AnItemIsReplace_ToNonEmptyList()
 		{
-			notEmptySll.Replace(testUser3, 1);
-			Assert.AreEqual(testUser2, notEmptySll.Tail.Data);
+			notEmptySll.Replace(testUser3, 0);
 			Assert.AreEqual(notEmptySll.Count(), 2);
+			Assert.AreEqual(testUser3, notEmptySll.Head.Data);
+			Assert.AreEqual(testUser2, notEmptySll.Tail.Data);
 		}
 
-		// Exception Occur: An item is inserted at index. (Empty List & index < 0)
+		// Exception Occur: An data is replaced at index. (index > Count())
 		[Test]
-		public void AnItemIsReplace_ToEmptyList_ExceptionOccurForLess()
+		public void AnItemIsReplace_ToNonEmptyList_ExceptionOccurForMore()
 		{
-			Assert.Throws<IndexOutOfRangeException>(() => emptySll.Replace(testUser3, -3));
+			Assert.Throws<IndexOutOfRangeException>(() => notEmptySll.Replace(testUser3, 10));
 		}
 
-		// Exception Occur: An item is inserted at index. (Empty List & index > range(3))
-		[Test]
-		public void AnItemIsReplace_ToEmptyList_ExceptionOccurForMore()
-		{
-			Assert.Throws<IndexOutOfRangeException>(() => emptySll.Replace(testUser3, 3));
-		}
-
-		// Exception Occur: An item is inserted at index. (NonEmpty List & index < 0)
+		// Exception Occur: An item is inserted at index. (index < 0)
 		[Test]
 		public void AnItemIsReplace_ToNonEmptyList_ExceptionOccurForLess()
 		{
 			Assert.Throws<IndexOutOfRangeException>(() => notEmptySll.Replace(testUser3, -3));
-		}
-
-		// Exception Occur: An item is inserted at index. (NonEmpty List & index > range(3))
-		[Test]
-		public void AnItemIsReplace_ToNonEmptyList_ExceptionOccurForMore()
-		{
-			Assert.Throws<IndexOutOfRangeException>(() => notEmptySll.Replace(testUser3, 3));
 		}
 
 		// Count
@@ -280,7 +255,7 @@ namespace Assignment3.Tests
 		[Test]
 		public void GetValue_EmptyList_ExceptionOccur()
 		{
-			Assert.Throws<CannotRemoveException>(() => emptySll.GetValue(0));
+			Assert.Throws<IndexOutOfRangeException>(() => emptySll.GetValue(0));
 		}
 
 		// GetValue throw excption with empty list
@@ -335,5 +310,26 @@ namespace Assignment3.Tests
 			Assert.IsFalse(emptySll.Contains(testUser1));
 		}
 
+
+		// 
+		[Test]
+		public void Reverse_NonEmptyList()
+		{
+			// prepare Linked List with 3 nodes
+			// user1 > user2 > user3
+			notEmptySll.AddLast(testUser3);
+			Assert.AreEqual(notEmptySll.Count(), 3);
+			Assert.AreEqual(notEmptySll.Head.Data, testUser1);
+			Assert.AreEqual(notEmptySll.Tail.Data, testUser3);
+
+			// user3 > user2 > user1
+			notEmptySll.Reverse();
+			Console.WriteLine(notEmptySll.Head.Data.Name);
+			Console.WriteLine(notEmptySll.Tail.Data.Name);
+			Assert.AreEqual(notEmptySll.Count(), 3);
+			Assert.AreEqual(notEmptySll.Head.Data, testUser3);
+			Assert.AreEqual(notEmptySll.Tail.Data, testUser1);
+
+		}
 	}
 }
